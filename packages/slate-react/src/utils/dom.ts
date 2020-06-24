@@ -104,7 +104,11 @@ export const normalizeDOMPoint = (domPoint: DOMPoint): DOMPoint => {
  */
 
 export const getDocumentOrShadowRoot = (): Document | ShadowRoot => {
-  return window.document.activeElement?.shadowRoot ?? window.document
+  return (
+    (window.document.activeElement &&
+      window.document.activeElement.shadowRoot) ||
+    window.document
+  )
 }
 
 /**
