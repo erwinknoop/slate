@@ -30,7 +30,6 @@ import {
   DOMRange,
   isDOMElement,
   isDOMNode,
-  isDOMText,
   DOMStaticRange,
   isPlainTextOnlyPaste,
 } from '../utils/dom'
