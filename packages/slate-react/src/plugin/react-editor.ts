@@ -21,6 +21,7 @@ import {
   isDOMElement,
   normalizeDOMPoint,
 } from '../utils/dom'
+import { IS_CHROME } from '../utils/environment'
 
 /**
  * A React and DOM-specific version of the `Editor` interface.
@@ -513,7 +514,20 @@ export const ReactEditor = {
         anchorOffset = domRange.anchorOffset
         focusNode = domRange.focusNode
         focusOffset = domRange.focusOffset
-        isCollapsed = domRange.isCollapsed
+        // COMPAT: There's a bug in chrome that always returns `true` for
+        // `isCollapsed` for a Selection that comes from a ShadowRoot.
+        // (2020/08/08)
+        // https://bugs.chromium.org/p/chromium/issues/detail?id=447523
+        if (
+          IS_CHROME &&
+          ReactEditor.findDocumentOrShadowRoot(editor) instanceof ShadowRoot
+        ) {
+          isCollapsed =
+            domRange.anchorNode === domRange.focusNode &&
+            domRange.anchorOffset === domRange.focusOffset
+        } else {
+          isCollapsed = domRange.isCollapsed
+        }
       } else {
         anchorNode = domRange.startContainer
         anchorOffset = domRange.startOffset
